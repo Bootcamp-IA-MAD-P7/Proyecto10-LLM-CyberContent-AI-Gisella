@@ -1,0 +1,11 @@
+streamlit
+langchain
+langgraph
+groq
+chromadb
+sentence-transformers
+pymupdf
+python-dotenv
+requests
+pandas
+pytest
