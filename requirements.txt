@@ -5,7 +5,8 @@ groq
 chromadb
 sentence-transformers
 pymupdf
-python-dotenv
+python-dotenv==1.2.3
 requests
 pandas
 pytest
+langchain-groq==1.1.3
