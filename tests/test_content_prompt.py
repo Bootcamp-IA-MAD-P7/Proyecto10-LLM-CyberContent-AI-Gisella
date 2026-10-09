@@ -34,3 +34,10 @@ def test_platform_is_case_insensitive(profile):
 def test_unsupported_platform_raises(profile):
     with pytest.raises(ValueError):
         build_prompt_variables(profile, "tiktok", "passwords")
+
+def test_prompt_includes_safety_rules(profile):
+    variables = build_prompt_variables(profile, "linkedin", "phishing awareness")
+    system_message = CONTENT_PROMPT.format_messages(**variables)[0].content
+
+    assert "Do not invent statistics" in system_message
+    assert "avoid technical jargon" in system_message
