@@ -35,9 +35,25 @@ def test_unsupported_platform_raises(profile):
     with pytest.raises(ValueError):
         build_prompt_variables(profile, "tiktok", "passwords")
 
+
 def test_prompt_includes_safety_rules(profile):
     variables = build_prompt_variables(profile, "linkedin", "phishing awareness")
     system_message = CONTENT_PROMPT.format_messages(**variables)[0].content
 
     assert "Do not invent statistics" in system_message
     assert "avoid technical jargon" in system_message
+
+
+def test_twitter_alias_maps_to_x(profile):
+    variables = build_prompt_variables(profile, "Twitter", "Phishing")
+    assert variables["platform"] == "x"
+
+
+def test_empty_topic_raises_error(profile):
+    with pytest.raises(ValueError):
+        build_prompt_variables(profile, "linkedin", "   ")
+
+
+def test_language_is_passed_to_prompt(profile):
+    variables = build_prompt_variables(profile, "blog", "Ransomware")
+    assert variables["language"] == "Spanish"

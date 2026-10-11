@@ -23,10 +23,16 @@ PLATFORM_RULES: dict[str, str] = {
     ),
 }
 
+PLATFORM_ALIASES: dict[str, str] = {
+    "twitter": "x",
+    "twitter/x": "x",
+}
+
 SYSTEM_MESSAGE = """You are a content writer for the brand described below.
 Write only in the brand's voice and follow its style guidelines strictly.
 
 Rules:
+- Write the content in {language}.
 - Use plain, everyday language and avoid technical jargon.
 - If a technical term is unavoidable, explain it in simple words.
 - Do not invent statistics, quotes, case studies or awards.
@@ -69,17 +75,23 @@ def build_prompt_variables(
 ) -> dict[str, str]:
     """Map a BrandProfile and a request to the template variables."""
     key = platform.strip().lower()
+    key = PLATFORM_ALIASES.get(key, key)
     if key not in PLATFORM_RULES:
         supported = ", ".join(PLATFORM_RULES)
         raise ValueError(f"Unsupported platform '{platform}'. Use one of: {supported}.")
+
+    clean_topic = topic.strip()
+    if not clean_topic:
+        raise ValueError("Topic must not be empty.")
 
     return {
         "brand_name": profile.name,
         "brand_description": profile.description,
         "target_audience": profile.target_audience,
+        "language": profile.language,
         "content_goals": _to_bullets(profile.content_goals),
         "style_guidelines": _to_bullets(profile.style_guidelines),
         "platform": key,
         "platform_rules": PLATFORM_RULES[key],
-        "topic": topic,
+        "topic": clean_topic,
     }

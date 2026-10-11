@@ -1,3 +1,5 @@
+"""Brand profile definition used to personalize generated content."""
+
 from dataclasses import dataclass, field
 
 
@@ -10,3 +12,4 @@ class BrandProfile:
     target_audience: str
     content_goals: list[str] = field(default_factory=list)
     style_guidelines: list[str] = field(default_factory=list)
+    language: str = "Spanish"
