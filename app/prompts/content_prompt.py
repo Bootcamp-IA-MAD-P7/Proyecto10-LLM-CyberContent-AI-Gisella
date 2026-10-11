@@ -33,6 +33,7 @@ Write only in the brand's voice and follow its style guidelines strictly.
 
 Rules:
 - Write the content in {language}.
+- Do not use Markdown formatting such as asterisks for bold or italics.
 - Use plain, everyday language and avoid technical jargon.
 - If a technical term is unavoidable, explain it in simple words.
 - Do not invent statistics, quotes, case studies or awards.
