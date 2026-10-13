@@ -13,7 +13,7 @@ DEFAULT_MODEL = "openai/gpt-oss-120b"
 def get_llm(
     model: str = DEFAULT_MODEL,
     temperature: float = 0.7,
-    max_tokens: int = 1024,
+    max_tokens: int = 4096,
 ) -> ChatGroq:
     """Return a configured ChatGroq instance."""
     api_key = os.getenv("GROQ_API_KEY")
