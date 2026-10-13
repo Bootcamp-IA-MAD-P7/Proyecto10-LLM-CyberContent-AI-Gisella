@@ -6,6 +6,18 @@ from dataclasses import dataclass, field
 from app.prompts.content_prompt import PLATFORM_ALIASES, PLATFORM_RULES
 
 HASHTAG_PATTERN = re.compile(r"#\w+")
+MARKDOWN_PATTERN = re.compile(r"\*|^#{1,6}\s", re.MULTILINE)
+SENTENCE_ENDINGS = (".", "!", "?", "…", '"', "”", ")", "»")
+
+
+def _looks_complete(text: str) -> bool:
+    """Return True if the text ends like a finished piece of writing."""
+    last_token = text.split()[-1]
+    return (
+        text.endswith(SENTENCE_ENDINGS)
+        or HASHTAG_PATTERN.fullmatch(last_token) is not None
+    )
+
 
 # Ranges are wider than the prompt rules because models do not count exactly.
 PLATFORM_LIMITS: dict[str, dict[str, int]] = {
@@ -69,6 +81,12 @@ def validate_output(content: str, platform: str) -> ValidationResult:
     if "max_hashtags" in limits and hashtag_count > limits["max_hashtags"]:
         result.errors.append(
             f"Too many hashtags: {hashtag_count} (maximum {limits['max_hashtags']})."
+        )
+    if MARKDOWN_PATTERN.search(text):
+        result.errors.append("Contains Markdown formatting (asterisks or headings).")
+    if not _looks_complete(text):
+        result.errors.append(
+            "The text looks cut off: it does not end like a complete sentence."
         )
 
     return result

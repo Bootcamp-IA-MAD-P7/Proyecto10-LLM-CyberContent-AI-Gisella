@@ -46,3 +46,20 @@ def test_instagram_caption_within_limits_is_valid():
 def test_unsupported_platform_raises():
     with pytest.raises(ValueError):
         validate_output("Hello", "tiktok")
+
+def test_markdown_asterisks_are_rejected():
+    text = "Titulo\n- **Remitente sospechoso**: revisa la direccion."
+    result = validate_output(text, "blog")
+    assert any("Markdown" in error for error in result.errors)
+
+
+def test_truncated_text_is_rejected():
+    text = "Conclusion\nLos corre"
+    result = validate_output(text, "blog")
+    assert any("cut off" in error for error in result.errors)
+
+
+def test_text_ending_with_hashtag_is_complete():
+    text = "No hagas clic en enlaces sospechosos. #Seguridad"
+    result = validate_output(text, "x")
+    assert result.is_valid
